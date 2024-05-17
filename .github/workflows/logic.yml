@@ -1,0 +1,29 @@
+name: Conditional Job Example
+
+on:
+  workflow_dispatch:
+    inputs:
+      force-redeploy:
+        description: 'Force redeploy'
+        required: false
+        default: 'no'
+
+jobs:
+  check_conditions:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set needDeploy to yes
+      id: deployit
+      run: echo "::set-output name=needDeploy::yes"
+
+    - name: Set trigger to false
+      id: check_triggers
+      run: echo "::set-output name=trigger::false"
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: check_conditions
+    if: steps.check_triggers.outputs.trigger == 'false' && (steps.deployit.outputs.needDeploy == 'yes' || github.event.inputs.force-redeploy == 'yes')
+    steps:
+    - name: Deploy
+      run: echo "Deploying application"
