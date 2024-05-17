@@ -23,7 +23,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: check_conditions
-    if: steps.check_triggers.outputs.trigger == 'false' && (steps.deployit.outputs.needDeploy == 'yes' || github.event.inputs.force-redeploy == 'yes')
+    if: |
+      ${{ needs.check_conditions.outputs.trigger == 'false' && (needs.check_conditions.outputs.deployit == 'yes' || github.event.inputs.force-redeploy == 'yes') }}
     steps:
     - name: Deploy
       run: echo "Deploying application"
