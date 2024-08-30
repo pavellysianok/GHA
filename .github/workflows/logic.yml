@@ -1,30 +1,30 @@
 name: Conditional Job Example
 
 on:
-  workflow_dispatch:
-    inputs:
-      force-redeploy:
-        description: 'Force redeploy'
-        required: false
-        default: 'no'
+  workflow_dispatch
+
 
 jobs:
-  check_conditions:
+  job1:
     runs-on: ubuntu-latest
+    outputs:
+      ADB_HOST: ${{ steps.set_host.outputs.ADB_HOST }}
+      ADB_TOKEN: ${{ steps.set_host.outputs.ADB_TOKEN }}
     steps:
     - name: Set needDeploy to yes
-      id: deployit
-      run: echo "::set-output name=needDeploy::yes"
+      id: set_host
+      run: |
+        set -x
+        ADB_HOST=https://ya.ru
+        ADB_TOKEN=secrettoken
+        echo "ADB_HOST=$ADB_HOST" >> $GITHUB_OUTPUT
+        echo "ADB_TOKEN=$ADB_TOKEN" >> $GITHUB_OUTPUT
 
-    - name: Set trigger to false
-      id: check_triggers
-      run: echo "::set-output name=trigger::false"
-
-  deploy:
+  job2:
     runs-on: ubuntu-latest
-    needs: check_conditions
-    if: |
-      ${{ needs.check_conditions.outputs.trigger == 'false' && (needs.check_conditions.outputs.deployit == 'yes' || github.event.inputs.force-redeploy == 'yes') }}
+    needs: job1
     steps:
-    - name: Deploy
-      run: echo "Deploying application"
+    - name: Checking
+      run: |
+        echo "Check from job1: host is $ADB_HOST"
+        echo "Check from job1: token is $ADB_TOKEN"
