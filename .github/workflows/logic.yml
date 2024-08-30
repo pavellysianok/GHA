@@ -25,6 +25,8 @@ jobs:
     needs: job1
     steps:
     - name: Checking
+      env:
+        ADB_HOST: ${{ needs.set_host.outputs.ADB_HOST }}
       run: |
         echo "Check from job1: host is $ADB_HOST"
         echo "Check from job1: token is $ADB_TOKEN"
