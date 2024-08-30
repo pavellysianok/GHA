@@ -17,8 +17,8 @@ jobs:
         set -x
         ADB_HOST=https://ya.ru
         ADB_TOKEN=secrettoken
-        echo "ADB_HOST=$ADB_HOST" >> $GITHUB_OUTPUT
-        echo "ADB_TOKEN=$ADB_TOKEN" >> $GITHUB_OUTPUT
+        echo "ADB_HOST=$ADB_HOST" >> "$GITHUB_OUTPUT"
+        echo "ADB_TOKEN=$ADB_TOKEN" >> "$GITHUB_OUTPUT"
 
   job2:
     runs-on: ubuntu-latest
