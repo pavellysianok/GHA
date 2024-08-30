@@ -21,3 +21,11 @@ jobs:
         run: |
           var=$(echo "${{ needs.one.outputs.HELLO }}")
           echo $var
+  three:
+    runs-on: ubuntu-latest
+    needs: one
+    steps:
+      - name: two-2
+        run: |
+          var2=$(echo "${{ needs.one.outputs.HELLO }}")
+          echo $var2
