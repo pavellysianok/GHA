@@ -1,0 +1,97 @@
+definitions:
+  job_clusters: &default_cluster
+    - job_cluster_key: ${var.job_name}
+      new_cluster:
+        spark_version: ${var.spark_version}
+        driver_node_type_id: ${var.driver_node_type_id}
+        node_type_id: ${var.node_type_id}
+        data_security_mode: ${var.data_security_mode}
+        autoscale:
+          min_workers: 1
+          max_workers: 2
+        custom_tags:
+          Purpose: ${var.purpose_tag}
+        cluster_log_conf:
+          dbfs:
+            destination: ${var.cluster_log_conf}
+        spark_conf:
+          spark.serializer: "org.apache.spark.serializer.KryoSerializer"
+          spark.kryo.unsafe: "false"
+          spark.sql.adaptive.enabled: "false"
+          spark.kryo.registrationRequired: "false"
+          spark.sql.legacy.timeParserPolicy: "LEGACY"
+          spark.hadoop.fs.permissions.umask-mode: "000"
+# The main yaml block for the resource definition
+# https://docs.databricks.com/aws/en/dev-tools/bundles/resources#job
+# https://docs.databricks.com/api/azure/workspace/jobs/create
+# https://docs.databricks.com/aws/en/jobs/run-if#example-job-with-task-dependencies
+resources:
+  jobs:
+    partner_rheia_lcc_telemetry_job:
+      name: ${var.job_name}
+      notification_settings:
+        no_alert_for_skipped_runs: true
+        no_alert_for_canceled_runs: false
+      # git_source:
+      #   git_branch: main
+      #   git_provider: gitHub
+      #   git_url: https://github.com/databricks/databricks-cli
+      #   git_commit: "e0056d01"
+      schedule:
+        quartz_cron_expression: 0 30 0 * * ?
+        timezone_id: America/New_York
+      edit_mode: ${var.edit_mode}
+      tags:
+        Purpose: ${var.purpose_tag}
+      parameters:
+        - name: env
+          default: qa
+      queue:
+        enabled: true
+      job_clusters: *default_cluster
+      tasks: # https://docs.databricks.com/aws/en/dev-tools/bundles/job-task-types
+        - task_key: condition_task
+          condition_task:
+            op: EQUAL_TO
+            left: ${var.skip_ddl}
+            right: 'true'
+            notebook_path: ../src/notebook.ipynb
+
+        - task_key: notebook_task
+          job_cluster_key: ${var.job_name}
+          depends_on:
+            - task_key: condition_task
+              outcome: 'true'
+          notebook_task:
+            notebook_path: ../src/notebook2.ipynb
+          libraries:
+            - jar: /Volumes/qa_01_adp_core/utility/comfort_data_products/partner-rheia-lcc-telemetry/lib/partner-rheia-lcc-telemetry-jar-with-dependencies.jar
+# https://docs.databricks.com/aws/en/dev-tools/bundles/job-task-types#python-script-task
+        # - task_key: my-python-script-task
+        #   spark_python_task:
+        #     python_file: ./my-script.py
+# https://docs.databricks.com/aws/en/dev-tools/bundles/job-task-types#python-wheel-task
+        # - task_key: my-python-wheel-task
+        #   python_wheel_task:
+        #     entry_point: run
+        #     package_name: my_package
+        #   libraries:
+        #     - whl: ./my_package/dist/my_package-*.whl
+# https://docs.databricks.com/aws/en/dev-tools/bundles/job-task-types#jar-task
+        # - task_key: my-jar-task
+        #   spark_jar_task:
+        #     main_class_name: org.example.com.Main
+        #   libraries:
+        #     - jar: /Volumes/main/default/my-volume/my-project-0.1.0-SNAPSHOT.jar
+# https://docs.databricks.com/aws/en/dev-tools/bundles/job-task-types#sql-file-task
+        # - task_key: my-sql-file-task
+        #   sql_task:
+        #     file:
+        #       path: /Users/someone@example.com/hello-world.sql
+        #       source: WORKSPACE
+        #     warehouse_id: 1a111111a1111aa1
+# https://docs.databricks.com/aws/en/dev-tools/bundles/job-task-types#dbt-task
+# https://docs.databricks.com/aws/en/dev-tools/bundles/job-task-types#ifelse-condition-task
+# https://docs.databricks.com/aws/en/dev-tools/bundles/job-task-types#for-each-task
+# https://docs.databricks.com/aws/en/dev-tools/bundles/job-task-types#run-job-task
+# https://docs.databricks.com/aws/en/dev-tools/bundles/job-task-types#dashboard-task
