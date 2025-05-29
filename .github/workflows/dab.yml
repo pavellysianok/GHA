@@ -70,10 +70,10 @@ jobs:
       #   with:
       #     token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Check if product_path exists
-        run: |
-          echo "Checking folder: ${{ github.event.inputs.product_path }}"
-          test -d "${{ github.event.inputs.product_path }}/DAB"
+      # - name: Check if product_path exists
+      #   run: |
+      #     echo "Checking folder: ${{ github.event.inputs.product_path }}"
+      #     test -d "${{ github.event.inputs.product_path }}/DAB"
 
       # Deploy the bundle to the "dev" target as defined
       # in the bundle's settings file.
