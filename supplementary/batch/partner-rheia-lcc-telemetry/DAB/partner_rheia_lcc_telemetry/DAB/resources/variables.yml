@@ -1,0 +1,57 @@
+# Defining custom variables and substitutions
+# https://docs.databricks.com/aws/en/dev-tools/bundles/variables
+# TODO: Update default value
+variables:
+  bundle_name:
+    description: Bundle name, should match the directory name
+    default: partner-rheia-lcc-telemetry
+  job_name:
+    description: Databricks job name
+    default: ${bundle.environment}-partner-rheia-lcc-telemetry
+# https://docs.databricks.com/api/workspace/clusters/create#custom_tags
+  purpose_tag:
+    description: Cluster tag for global init script
+    default: data-partner-rheia-lcc-telemetry
+# https://docs.databricks.com/api/azure/workspace/clusters/create#spark_version
+  spark_version:
+    description: The Spark version of the cluster, e.g. 3.3.x-scala2.11
+    default: 16.4.x-scala2.12
+# https://docs.databricks.com/api/azure/workspace/clusters/create#spark_env_vars
+#  spark_env_vars:
+    
+  # job_cluster_key_mode:
+  #   description: If deploying, change default to exactly `${var.job_name}`.
+  #                If not deploying, leave default as empty double quotes (e.g., "")
+  #   default: ${var.job_name} #'' # delete and replace with '' (original ${var.job_name})
+  
+  # existing_cluster_id_mode:
+  #   description: If developing, change default to your personal cluster ID (e.g., "0927-162128-7lhy757n"). 
+  #                If not developing, leave default as empty double quotes (e.g., "")
+
+  skip_ddl:
+    description: Flag for skipping DDL script running
+    default: true
+  # sre-adp-infra-support Action group for Slack notifications - for testing, TBD
+  webhook_id_alerts:
+    description: Databricks QA webhook ID for `#sre-adp-infra-support`
+    default: 78732b27-c629-4f29-8489-1111111
+# https://docs.databricks.com/api/azure/workspace/clusters/create#cluster_log_conf
+  cluster_log_conf:
+    description: The configuration for delivering spark logs to a long-term storage destination.
+    default: dbfs:/mnt/cluster-logs/partner-rheia-lcc-telemetry
+# https://docs.databricks.com/api/azure/workspace/clusters/create#driver_node_type_id
+  driver_node_type_id:
+    description: The node type of the Spark driver. Note that this field is optional; if unset, the driver node type will be set as the same value as node_type_id defined above.
+    default: Standard_DS3_v2
+# https://docs.databricks.com/api/azure/workspace/clusters/create#node_type_id
+  node_type_id:
+    description: This field encodes, through a single value, the resources available to each of the Spark nodes in this cluster.
+    default: Standard_DS3_v2
+# https://docs.databricks.com/api/azure/workspace/clusters/create#data_security_mode
+  data_security_mode:
+    description: Data security mode decides what data governance model to use when accessing data from a cluster.
+    default: SINGLE_USER
+# https://docs.databricks.com/api/workspace/jobs/create#edit_mode
+  edit_mode:
+    description: Edit mode of the job - Enum UI_LOCKED | EDITABLE
+    default: EDITABLE

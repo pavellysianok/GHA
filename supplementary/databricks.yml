@@ -1,0 +1,7 @@
+# This is a Databricks asset bundle definition for partner_rheia_lcc_telemetry.
+# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
+bundle:
+  name: ${var.bundle_name}
+
+include:
+  - resources/*.yml
