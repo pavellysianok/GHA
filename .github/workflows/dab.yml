@@ -18,10 +18,6 @@ on:
   #   - '!.github/workflows/ci-dab.yml'
   workflow_dispatch:
     inputs:
-      environment:
-        description: 'The Databricks WS to deploy to'
-        required: true
-        type: environment
       product_path:
         description: 'Path of the product'
         required: true
