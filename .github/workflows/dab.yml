@@ -1,0 +1,106 @@
+# This workflow validates, deploys, and runs the specified bundle
+# within a pre-production target named "dev".
+name: 'CI: DAB'
+
+# Trigger this workflow whenever a pull request is opened against the repo's
+# main branch or an existing pull request's head branch is updated.
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    branches:
+      - main
+  # push:
+  #   branches:
+  #     - 'feature/ADP-12149'
+  #   paths-ignore:
+  #   - '!.github/workflows/ci-dab.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'The Databricks WS to deploy to'
+        required: true
+        type: environment
+      product_path:
+        description: 'Path of the product'
+        required: true
+        type: string
+      target:
+        description: 'Target environment from databricks.yml (e.g., qa, qa-adp)'
+        required: true
+        type: string
+
+jobs:
+  # Used by the "pipeline_update" job to deploy the bundle.
+  # Bundle validation is automatically performed as part of this deployment.
+  # If validation fails, this workflow fails.
+  preparation:
+    name: 'CI: Install dependencies'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "CI: Install gh cli"
+        run:
+          curl -sLO 'https://github.com/cli/cli/releases/download/v2.73.0/gh_2.73.0_linux_amd64.deb' && sudo dpkg -i ./gh_2.73.0_linux_amd64.deb
+
+      - name: Install unzip
+        run: sudo apt install unzip
+
+      - name: Update runner
+        run: |
+          sudo apt update
+          sudo apt -y upgrade
+
+      - name: Display Python version
+        run: python3 -V
+      # Download the Databricks CLI.
+      # See https://github.com/databricks/setup-cli
+      - uses: databricks/setup-cli@v0.252.0
+
+  bundle_validation:
+    needs: preparation
+    name: 'CI: Bundle validation'
+    runs-on: ubuntu-latest
+
+    steps:
+      # - name: "CI: check github auth"
+      #   run: |
+      #     echo ${{ secrets.PAT_TOKEN }} | gh auth login --with-token
+      #     gh auth status -t
+
+      # - name: "CI: Checkout from repo"
+      #   uses: actions/checkout@v4
+      #   with:
+      #     token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Check if product_path exists
+        run: |
+          echo "Checking folder: ${{ github.event.inputs.product_path }}"
+          test -d "${{ github.event.inputs.product_path }}/DAB"
+
+      # Deploy the bundle to the "dev" target as defined
+      # in the bundle's settings file.
+      - name: Databricks bundle validation
+        env:
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_BUNDLE_ENV: qa-adp
+      # working dir like /supplementary/batch/partner-rheia-lcc-telemetry/DAB/partner_rheia_lcc_telemetry/DAB
+        working-directory: "./${{ github.event.inputs.product_path }}/DAB"
+        run: databricks bundle validate
+
+        # Sync DAB structure with Databricks workspace        
+      - name: "CI: Databricks bundle deploy"
+        env:
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_BUNDLE_ENV: qa-adp
+        working-directory: "${{ github.event.inputs.product_path }}/DAB"
+        run: databricks bundle sync --full
+
+        # Deploy DAB to Databricks        
+      - name: "CI: Databricks bundle deploy"
+        env:
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_BUNDLE_ENV: qa-adp
+        working-directory: "${{ github.event.inputs.product_path }}/DAB"
+        run: databricks bundle deploy -t "${{ github.event.inputs.target }}"
