@@ -5,17 +5,7 @@ name: 'CI: DAB'
 # Trigger this workflow whenever a pull request is opened against the repo's
 # main branch or an existing pull request's head branch is updated.
 on:
-  # pull_request:
-  #   types:
-  #     - opened
-  #     - synchronize
-  #   branches:
-  #     - main
-  # push:
-  #   branches:
-  #     - 'feature/ADP-12149'
-  #   paths-ignore:
-  #   - '!.github/workflows/ci-dab.yml'
+  workflow_call:
   workflow_dispatch:
     inputs:
       product_path:
