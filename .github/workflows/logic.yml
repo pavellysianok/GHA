@@ -1,3 +1,4 @@
+name: "CI: Create product release"
 run-name: "CI: Create product release for ${{ github.event.inputs.app }}"
 on:
   workflow_dispatch:
@@ -11,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Fake release version creating
-      id: version
+        id: version
         run: |
           echo "Generating release version..."
           echo "RELEASE_VERSION=1.0.0" >> $GITHUB_ENV
