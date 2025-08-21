@@ -23,6 +23,9 @@ jobs:
           echo "### Release version: ${{ steps.version.outputs.release_version }}" >> $GITHUB_STEP_SUMMARY
           echo "### Product: ${{ github.event.inputs.app }}" >> $GITHUB_STEP_SUMMARY
 
+      - name: "NPM install"
+        run: npm install @actions/core
+
       - name: 'Wrapper action sample'
         run: |
           npx github-actions-wrapper \
