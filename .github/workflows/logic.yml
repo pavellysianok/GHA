@@ -22,3 +22,9 @@ jobs:
         run: |
           echo "### Release version: ${{ steps.version.outputs.release_version }}" >> $GITHUB_STEP_SUMMARY
           echo "### Product: ${{ github.event.inputs.app }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: 'Wrapper action sample'
+        run: |
+          npx github-actions-wrapper \
+            --name 'GitHub' \
+            --main 'main.js'
