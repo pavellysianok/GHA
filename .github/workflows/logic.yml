@@ -25,9 +25,3 @@ jobs:
 
       - name: "NPM install"
         run: npm install @actions/core
-
-      - name: 'Wrapper action sample'
-        run: |
-          npx github-actions-wrapper \
-            --name 'GitHub' \
-            --main 'main.js'

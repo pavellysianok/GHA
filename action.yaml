@@ -1,0 +1,7 @@
+name: 'Wrapper action sample'
+inputs:
+  name:
+    default: 'GitHub'
+runs:
+  using: 'node12'
+  main: 'main.js'
