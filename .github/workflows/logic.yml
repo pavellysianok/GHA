@@ -31,5 +31,9 @@ jobs:
         run: |
           echo "### Release version: ${{ steps.version.outputs.release_version }}" >> $GITHUB_STEP_SUMMARY
           echo "### Product: ${{ github.event.inputs.app }}" >> $GITHUB_STEP_SUMMARY
-      - name: Show Release Status
-        uses: ./
+
+      # - name: Show Release Status
+      #   uses: ./
+      - name: send notice message
+        run: |
+          echo "::notice file=main.js,line=1,col=5,endColumn=7::Missing semicolon"
