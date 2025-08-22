@@ -31,6 +31,8 @@ jobs:
         uses: .github/actions/set-run-name@v1
         with:
           run-name: "Release ${{ github.event.inputs.app }} 🚀"
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
       # - name: "Added Job summary with release version"
       #   run: |
       #     echo "### Release version: ${{ steps.version.outputs.release_version }}" >> $GITHUB_STEP_SUMMARY
