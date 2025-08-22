@@ -27,13 +27,17 @@ jobs:
           echo "RELEASE_VERSION=1.0.0" >> $GITHUB_ENV
 
 
-      - name: "Added Job summary with release version"
-        run: |
-          echo "### Release version: ${{ steps.version.outputs.release_version }}" >> $GITHUB_STEP_SUMMARY
-          echo "### Product: ${{ github.event.inputs.app }}" >> $GITHUB_STEP_SUMMARY
+      - name: Set workflow run name
+        uses: ./ # или your-org/your-action@v1
+        with:
+          run-name: "Release ${{ github.event.inputs.app }} 🚀"
+      # - name: "Added Job summary with release version"
+      #   run: |
+      #     echo "### Release version: ${{ steps.version.outputs.release_version }}" >> $GITHUB_STEP_SUMMARY
+      #     echo "### Product: ${{ github.event.inputs.app }}" >> $GITHUB_STEP_SUMMARY
 
-      # - name: Show Release Status
-      #   uses: ./
-      - name: send notice message
-        run: |
-          echo "::notice file=main.js,line=1,col=5,endColumn=7::Missing semicolon"
+      # # - name: Show Release Status
+      # #   uses: ./
+      # - name: send notice message
+      #   run: |
+      #     echo "::notice file=main.js,line=1,col=5,endColumn=7::Missing semicolon"

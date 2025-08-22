@@ -1,0 +1,10 @@
+name: "Set Workflow Run Name"
+description: "Change workflow run name dynamically"
+author: "Your Name"
+inputs:
+  run-name:
+    description: "New run name"
+    required: true
+runs:
+  using: "node16"
+  main: "dist/index.js"
