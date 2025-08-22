@@ -15,7 +15,12 @@ jobs:
         run: npm init -y
 
       - name: "NPM install"
-        run: npm install @actions/core @actions/github
+        run: | 
+          cd .github/actions/set-run-name
+          npm init -y
+          npm install @actions/core @actions/github @vercel/ncc
+          npx ncc build src/index.js -o dist
+
 
       - name: Checkout
         uses: actions/checkout@v4
