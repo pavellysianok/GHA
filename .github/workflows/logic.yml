@@ -11,11 +11,11 @@ jobs:
   demo_job_summary:
     runs-on: ubuntu-latest
     steps:
-      - name: "NPM install"
-        run: npm install @actions/core
+      - name: "NPM init"
+        run: npm init -y
 
       - name: "NPM install"
-        run: npm install @actions/github
+        run: npm install @actions/core @actions/github
 
       - name: Checkout
         uses: actions/checkout@v4
