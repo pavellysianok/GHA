@@ -28,7 +28,7 @@ jobs:
 
 
       - name: Set workflow run name
-        uses: .github/actions/set-run-name@v1
+        uses: ./.github/actions/set-run-name
         with:
           run-name: "Release ${{ github.event.inputs.app }} 🚀"
         env:
