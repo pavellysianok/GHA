@@ -1,4 +1,5 @@
 name: 'Wrapper action sample'
+description: 'A wrapper action example'
 inputs:
   name:
     default: 'GitHub'
